@@ -1,5 +1,3 @@
-package vaccineProgram;
-
 public class Client {
 	private int num;
 	private String id;

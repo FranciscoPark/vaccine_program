@@ -1,10 +1,8 @@
-package vaccineProgram;
-
 import java.sql.Date;
 
 public class Injection {
     private int id;
-    private int client_id;
+    private String client_id;
     private String vacType;
     private int degree;
     private String part;
@@ -15,7 +13,7 @@ public class Injection {
     }
 
     //initialize injection
-    public Injection(int id, int client_id,int reserve_num, String vacType, int degree, String part, Date injection_date) {
+    public Injection(int id, String client_id,int reserve_num, String vacType, int degree, String part, Date injection_date) {
         
         this.id = id;
         this.client_id = client_id;
@@ -37,10 +35,10 @@ public class Injection {
         return id;
     }
 
-    public int getClient_id() {
+    public String getClient_id() {
         return client_id;
     }
-    public void setClient_id(int client_id) {
+    public void setClient_id(String client_id) {
         this.client_id = client_id;
     }
 
@@ -77,7 +75,7 @@ public class Injection {
         this.part = part;
     }
 
-    //updat
+    //update
 
     public Date getInjection_date() {
         return injection_date;

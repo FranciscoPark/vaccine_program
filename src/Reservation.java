@@ -1,46 +1,40 @@
-package vaccineProgram;
-
 import java.sql.Date;
 
 public class Reservation {
 	private int reserveNum;
-	private int clientNum;
-	private String reserveDay;
+	private String clientId;
+	private Date reserveDay;
 	private boolean injected;
 	
 	public Reservation() {}
 
-	public Reservation(String reserveDay) {
-		this.reserveDay=reserveDay;
-	}
-	public Reservation(int reserveNum, int clientNum, String reserveDay, boolean injected) {
+
+	public Reservation(int reserveNum, String clientId, Date reserveDay, boolean injected) {
 		this.reserveNum = reserveNum;
-		this.clientNum = clientNum;
+		this.clientId = clientId;
 		this.reserveDay = reserveDay;
 		this.injected = injected;
 	}
 
-	public int getReserveNum() {
-		return reserveNum;
-	}
+	public int getReserveNum() {return reserveNum;}
 
 	public void setReserveNum(int reserveNum) {
 		this.reserveNum = reserveNum;
 	}
 
-	public int getClientNum() {
-		return clientNum;
+	public String getClientId() {
+		return clientId;
 	}
 
-	public void setClientNum(int clientNum) {
-		this.clientNum = clientNum;
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}
 
-	public String getReserveDay() {
+	public Date getReserveDay() {
 		return reserveDay;
 	}
 
-	public void setReserveDay(String reserveDay) {
+	public void setReserveDay(Date reserveDay) {
 		this.reserveDay = reserveDay;
 	}
 
@@ -54,7 +48,7 @@ public class Reservation {
 
 	@Override
 	public String toString() {
-		return "Reservation [reserveNum=" + reserveNum + ", clientNum=" + clientNum + ", reserveDay=" + reserveDay
+		return "Reservation [reserveNum=" + reserveNum + ", clientNum=" + clientId + ", reserveDay=" + reserveDay
 				+ ", injected=" + injected + "]";
 	}
 

@@ -1,9 +1,4 @@
-package vaccineProgram;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class ReservationDao {
@@ -18,12 +13,16 @@ public class ReservationDao {
 
 	public void insert(Reservation r) {
 		Connection conn = dbconn.getConn();
-		String sql = "insert into reservation(clientNum,reserveDay,injected) values(?,?,?)";
+		String sql = "insert into reservation(reserveNum,clientId,ReserveDay,injected) values(?,?,?,?)";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, ClientService.LoginNum);
-			pstmt.setString(2, r.getReserveDay());
-			pstmt.setBoolean(3, false);
+
+			pstmt.setInt(1,r.getReserveNum() );
+			pstmt.setString(2, r.getClientId());
+			pstmt.setDate(3,r.getReserveDay());
+			pstmt.setBoolean(4,r.isInjected());
+
+
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -38,11 +37,13 @@ public class ReservationDao {
 		}
 	}
 
+
+
 	public Reservation select(int reserveNum) {
 		ResultSet rs;
 		Reservation r = null;
 		Connection conn = dbconn.getConn();
-		String sql = "select * from client where ReserveNum=?";
+		String sql = "select * from reservation where reserveNum=?";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 
@@ -52,10 +53,10 @@ public class ReservationDao {
 			if (rs.next()) {
 
 				int reserveNum1 = rs.getInt(1);
-				int clientNum = rs.getInt(2);
-				String reserveDay = rs.getString(3);
+				String clientId = rs.getString(2);
+				Date reserveDay = rs.getDate(3);
 				Boolean injected = rs.getBoolean(4);
-				r = new Reservation(reserveNum1, clientNum, reserveDay, injected);
+				r = new Reservation(reserveNum1, clientId, reserveDay, injected);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -77,13 +78,13 @@ public class ReservationDao {
 
 		Connection conn = dbconn.getConn();
 
-		String sql = "select * from test order by num";
+		String sql = "select * from reservation";
 
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				list.add(new Reservation(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getBoolean(4)));
+				list.add(new Reservation(rs.getInt(1), rs.getString(2), rs.getDate(3), rs.getBoolean(4)));
 			}
 
 		} catch (SQLException e) {
@@ -99,15 +100,12 @@ public class ReservationDao {
 		return list;
 	}
 
-	public void delete() {
+	public void change(int reserve_num) {
 		Connection conn = dbconn.getConn();
-		ArrayList<Integer> list = idao.getAllReserveNum();
-		for (int i = 0; i < list.size(); i++) {
-			String sql = "delete from reservation where num = ?";
-
+		String sql = "update reservation set injected = true where reserveNum=?";
 			try {
 				PreparedStatement pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, list.get(i));
+				pstmt.setInt(1, reserve_num);
 				pstmt.executeUpdate();
 
 			} catch (SQLException e) {
@@ -116,12 +114,11 @@ public class ReservationDao {
 			} finally {
 				try {
 					conn.close();
-
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		System.out.println("delete from reservation ");
+
 	}
-}
+

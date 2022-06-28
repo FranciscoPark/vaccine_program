@@ -1,5 +1,3 @@
-package vaccineProgram;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +22,7 @@ public class ClientDao {
 			pstmt.setInt(3, c.getAge());
 			pstmt.setString(4, c.getGender());
 			pstmt.setString(5, c.getPhone());
-			int cnt = pstmt.executeUpdate();
+			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -38,25 +36,25 @@ public class ClientDao {
 		}
 	}
 
-	public Client select(int num) {
+	public Client select(String id) {
 		ResultSet rs;
 		Client c = null;
 		Connection conn = myconn.getConn();
-		String sql = "select * from client where num=?";
+		String sql = "select * from client where id=?";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 
-			pstmt.setInt(1, num);
+			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 
 			if (rs.next()) {
 				int numm = rs.getInt(1);
-				String id = rs.getString(2);
+				String id2 = rs.getString(2);
 				String pw = rs.getString(3);
 				int age = rs.getInt(4);
 				String gender = rs.getString(5);
 				String phone = rs.getString(6);
-				c = new Client(numm, id, pw, age, gender, phone);
+				c = new Client(numm, id2, pw, age, gender, phone);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -74,15 +72,15 @@ public class ClientDao {
 
 	public void update(Client c) {
 		Connection conn = myconn.getConn();
-		String sql = "update client set id=?, pw=?, age=?,gender=?, phone=? where num =?";
+		String sql = "update client set pw=?, age=?,gender=?, phone=? where id =?";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, c.getId());
-			pstmt.setString(2, c.getPw());
-			pstmt.setInt(3, c.getAge());
-			pstmt.setString(4, c.getGender());
-			pstmt.setString(5, c.getPhone());
-			pstmt.setInt(6, c.getNum());
+
+			pstmt.setString(1, c.getPw());
+			pstmt.setInt(2, c.getAge());
+			pstmt.setString(3, c.getGender());
+			pstmt.setString(4, c.getPhone());
+			pstmt.setString(5,c.getId());
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
@@ -98,12 +96,12 @@ public class ClientDao {
 		}
 	}
 	
-	public void delete(int num) {
+	public void delete(String id) {
 		Connection conn = myconn.getConn();
-		String sql = "delete from client where num =? ";
+		String sql = "delete from client where id =? ";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, num);
+			pstmt.setString(1, id);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

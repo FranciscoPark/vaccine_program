@@ -1,4 +1,3 @@
-package vaccineProgram;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +8,10 @@ import java.util.Scanner;
 
 public class InjectionDao {
     private MysqlConnect dbconn;
+
+    public InjectionDao(){
+        dbconn = MysqlConnect.getInstance();
+    }
     public void addInjection(Injection p) {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -17,7 +20,7 @@ public class InjectionDao {
             String sql = "insert into injection(id, client_id,reserve_num, vacType, degree, part, injection_date) values(?,?,?,?,?,?,?)";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, p.getId());
-            pstmt.setInt(2, p.getClient_id());
+            pstmt.setString(2, p.getClient_id());
             pstmt.setInt(3, p.getReserve_num());
             pstmt.setString(4, p.getVacType());
             pstmt.setInt(5, p.getDegree());
@@ -39,7 +42,7 @@ public class InjectionDao {
 
     }
     //get injection
-    public void getInjection(int client_num) {
+    public void getInjection(String clientId) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -47,16 +50,17 @@ public class InjectionDao {
             conn = dbconn.getConn();
             String sql = "select * from injection where client_id = ?";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, client_num);
+            pstmt.setString(1, clientId);
             rs = pstmt.executeQuery();
             while (rs.next()) {
-                System.out.println("백신 접종번호 : " + rs.getInt("id"));
-                System.out.println("백신 예약번호 : " + rs.getInt("reserve_num"));
-                System.out.println("클라이언트 아이디 : " + rs.getInt("client_id"));
-                System.out.println("백신 종류 : " + rs.getString("vacType"));
-                System.out.println("백신 차수 : " + rs.getInt("degree"));
-                System.out.println("백신 접종 위치 : " + rs.getString("part"));
-                System.out.println("백신 접종일 : " + rs.getDate("injection_date"));
+                System.out.println("Injection Number : " + rs.getInt("id"));
+                System.out.println("Reserved Number : " + rs.getInt("reserve_num"));
+                System.out.println("Client ID : " + rs.getString("client_id"));
+                System.out.println("VacType (Ast, Jan, PF, Mod): " + rs.getString("vacType"));
+                System.out.println("Degree : " + rs.getInt("degree"));
+                System.out.println("Part : " + rs.getString("part"));
+                System.out.println("Date : " + rs.getDate("injection_date"));
+                System.out.println("------------------------------");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,6 +74,33 @@ public class InjectionDao {
             }
         }
     }
+    public String getvacType(int age){
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String resout="";
+        try{
+            conn = dbconn.getConn();
+            String sql = "select vacType from hospital where ? between age_min and age_max";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, age);
+            rs = pstmt.executeQuery();
+            resout =rs.getString("vacType");
+        }catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return resout;
+    }
+
+
 public ArrayList<Integer> getAllReserveNum(){
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -96,7 +127,4 @@ public ArrayList<Integer> getAllReserveNum(){
         }
         return reserve_num;
     }
-
-
-
 }
